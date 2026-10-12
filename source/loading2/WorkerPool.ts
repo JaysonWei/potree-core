@@ -1,5 +1,11 @@
-const BrotliDecoderWorker = require('./brotli-decoder.worker.js').default;
-const DecoderWorker = require('./decoder.worker.js').default;
+const createBrotliDecoderWorker = (): Worker => new Worker(
+	new URL('./brotli-decoder.worker.js', import.meta.url),
+	{type: 'module'},
+);
+const createDecoderWorker = (): Worker => new Worker(
+	new URL('./decoder.worker.js', import.meta.url),
+	{type: 'module'},
+);
 
 
 /**
@@ -29,10 +35,10 @@ function createWorker(type: WorkerType): Worker
 	switch (type) 
 	{
 		case WorkerType.DECODER_WORKER_BROTLI: {
-			return new BrotliDecoderWorker();
+			return createBrotliDecoderWorker();
 		}
 		case WorkerType.DECODER_WORKER: {
-			return new DecoderWorker();
+			return createDecoderWorker();
 		}
 		default:
 			throw new Error('Unknown worker type');

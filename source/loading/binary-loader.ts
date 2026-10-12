@@ -5,7 +5,10 @@ import {PointCloudOctreeGeometryNode} from '../point-cloud-octree-geometry-node'
 import {Version} from '../version';
 import {GetUrlFn, XhrRequest} from './types';
 
-const ClassicWorker = require('../workers/binary-decoder.worker.js').default;
+const createBinaryDecoderWorker = (): Worker => new Worker(
+	new URL('../workers/binary-decoder.worker.js', import.meta.url),
+	{type: 'module'},
+);
 
 interface AttributeData {
   attribute: {
@@ -188,11 +191,7 @@ export class BinaryLoader
 			return worker;
 		}
 
-		// return new Worker(
-		//   new URL('../workers/binary-decoder.worker.js', import.meta.url),
-		//   { type: 'module' },
-		// )
-		return new ClassicWorker();
+		return createBinaryDecoderWorker();
 	}
 
 	private releaseWorker(worker: Worker): void 
